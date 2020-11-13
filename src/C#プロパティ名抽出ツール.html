@@ -12,16 +12,33 @@ http://opensource.org/licenses/mit-license.php
         <meta charset="utf-8">
         <title>C#プロパティ名抽出ツール</title>
         <style type="text/css">
-            .textarea_container {
-                display: flex;
-                justify-content: center;
-                height: 30em;
+            @media (prefers-color-scheme: light) {
+                textarea {
+                    background-color: whitesmoke;
+                }
+            }
+            @media (prefers-color-scheme: dark) {
+                body {
+                    background-color: dimgray;
+                    color: whitesmoke;
+                }
+                textarea {
+                    background-color: gray;
+                    color: whitesmoke;
+                }
+                ::placeholder {
+                    color: black;
+                }
             }
             textarea { 
                 overflow: scroll;
                 width: 100%;
                 margin: 5px;
-                background-color: whitesmoke;
+            }
+            .textarea_container {
+                display: flex;
+                justify-content: center;
+                height: 30em;
             }
             fieldset {
                 margin: 5px;
