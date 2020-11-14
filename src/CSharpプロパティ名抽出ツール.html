@@ -30,7 +30,7 @@ http://opensource.org/licenses/mit-license.php
                     color: black;
                 }
             }
-            textarea { 
+            textarea {
                 overflow: scroll;
                 width: 100%;
                 margin: 5px;
@@ -78,11 +78,11 @@ http://opensource.org/licenses/mit-license.php
             })
 
             function filterText() {
-                
+
                 if (!inputTextArea.value) {
                     return;
                 }
-                
+
                 const propertyRegex = /(public|internal)\s*(sealed|virtual|override|^static)?\s*(\S+)\s*(\S+)/;
 
                 let className = '';
@@ -92,11 +92,6 @@ http://opensource.org/licenses/mit-license.php
 
                 lines.forEach(line => {
 
-                    // 空文字なら処理を行わない
-                    if(!line) {
-                        return;
-                    }
-
                     // メソッドなら処理を行わない
                     if (line.slice(-1) == ')') {
                         return;
@@ -104,26 +99,24 @@ http://opensource.org/licenses/mit-license.php
 
                     const match = line.trim().match(propertyRegex);
 
-                    if (match == null) {
-                        return;
+                    if (match != null) {
+                        const type = match[3];
+                        const name = match[4];
+
+                        // 静的プロパティなら処理を行わない
+                        if (type == 'static') {
+                            return;
+                        }
+
+                        // クラス名ならクラス名を保持してコンティニューする
+                        if (type == 'class') {
+                            className += name;
+                            return;
+                        }
+
+                        content += showPropertyTypeCheckBox.checked ? `${type}\t` : '';
+                        content += name + '\n';
                     }
-
-                    const type = match[3];
-                    const name = match[4];
-
-                    // 静的プロパティなら処理を行わない
-                    if (type == 'static') {
-                        return;
-                    }
-
-                    // クラス名ならクラス名を保持してコンティニューする
-                    if (type == 'class') {
-                        className += name;
-                        return;
-                    }
-
-                    content += showPropertyTypeCheckBox.checked ? `${type}\t` : '';
-                    content += name + '\n';
                 });
 
                 let header = showClassNameCheckBox.checked ? `クラス名\t${className}\n` : '';
