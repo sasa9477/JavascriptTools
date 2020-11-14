@@ -78,6 +78,11 @@ http://opensource.org/licenses/mit-license.php
             })
 
             function filterText() {
+                
+                if (!inputTextArea.value) {
+                    return;
+                }
+                
                 const propertyRegex = /(public|internal)\s*(sealed|virtual|override|^static)?\s*(\S+)\s*(\S+)/;
 
                 let className = '';
