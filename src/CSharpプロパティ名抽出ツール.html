@@ -23,11 +23,11 @@ http://opensource.org/licenses/mit-license.php
                     color: whitesmoke;
                 }
                 textarea {
-                    background-color: gray;
+                    background-color:black;
                     color: whitesmoke;
                 }
                 ::placeholder {
-                    color: black;
+                    color: whitesmoke;
                 }
             }
             textarea {
@@ -50,8 +50,9 @@ http://opensource.org/licenses/mit-license.php
             <h3>C#プロパティ名抽出ツール</h3>
             <div>
                 <fieldset>
-                    <input id="show_property_type_check_box" type="checkbox"/>型名を表示する
-                    <input id="show_class_name_check_box" type="checkbox"/>クラス名を表示する
+                    <input id="show_property_type_check_box" type="checkbox"/>プロパティの型名を表示する
+                    <input id="change_property_propertyNames_to_camelCase_check_box" type="checkbox"/>プロパティ名をキャメルケースに変更する
+                    <input id="show_class_propertyName_check_box" type="checkbox"/>クラス名を表示する
                 </fieldset>
             </div>
             <div class="textarea_container">
@@ -61,11 +62,16 @@ http://opensource.org/licenses/mit-license.php
         </div>
         <script type="text/javascript">
             const showPropertyTypeCheckBox = document.getElementById("show_property_type_check_box");
-            const showClassNameCheckBox = document.getElementById('show_class_name_check_box');
+            const changePropertyNamesToCamelCaseCheckBox = document.getElementById("change_property_propertyNames_to_camelCase_check_box");
+            const showClassNameCheckBox = document.getElementById('show_class_propertyName_check_box');
             const inputTextArea = document.getElementById("input_textarea");
             const outputTextArea = document.getElementById("output_textarea");
 
             showPropertyTypeCheckBox.addEventListener('change', () => {
+                filterText();
+            });
+
+            changePropertyNamesToCamelCaseCheckBox.addEventListener('change', () => {
                 filterText();
             });
 
@@ -100,22 +106,28 @@ http://opensource.org/licenses/mit-license.php
                     const match = line.trim().match(propertyRegex);
 
                     if (match != null) {
-                        const type = match[3];
-                        const name = match[4];
+                        const propertyType = match[3];
+                        let propertyName = match[4];
 
                         // 静的プロパティなら処理を行わない
-                        if (type == 'static') {
+                        if (propertyType == 'static') {
                             return;
                         }
 
                         // クラス名ならクラス名を保持してコンティニューする
-                        if (type == 'class') {
-                            className += name;
+                        if (propertyType == 'class') {
+                            className += propertyName;
                             return;
                         }
 
-                        content += showPropertyTypeCheckBox.checked ? `${type}\t` : '';
-                        content += name + '\n';
+                        // キャメルケースに変更するチェックボックスが入っていたらプロパティ名をキャメルケースに変換する
+                        if (changePropertyNamesToCamelCaseCheckBox.checked)
+                        {
+                            propertyName =  propertyName.charAt(0).toLowerCase() + propertyName.slice(1);
+                        }
+
+                        content += showPropertyTypeCheckBox.checked ? `${propertyType}\t` : '';
+                        content += propertyName + '\n';
                     }
                 });
 
